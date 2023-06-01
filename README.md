@@ -3,7 +3,7 @@ Image Caching and Serving scenario with nginx + minio + memcached
 <br>
 note: replace image_filter with imgproxy in picture below
 
-![nginx-minio-memcached-imagecaching diagram](https://raw.githubusercontent.com/sadeghmohebbi/nginx-minio-memcached-imagecaching/master/diagram.jpg)
+![nginx-minio-memcached-imagecaching diagram](https://raw.githubusercontent.com/sadeghmohebbi/nginx-minio-memcached-imagecaching/master/assets/diagram.jpg)
 
 ## How it works
 first install docker and compose plugin. then simply run:
