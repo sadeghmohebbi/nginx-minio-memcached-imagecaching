@@ -3,13 +3,16 @@ version: '3.8'
 # Settings and configurations that are common for all containers
 x-minio-common: &minio-common
   image: quay.io/minio/minio
+  restart: unless-stopped
   command: server --console-address ":9001" http://minio{1...3}/data{1...2}
   expose:
     - "9000"
     - "9001"
   environment:
-    MINIO_ROOT_USER: 'admin'
-    MINIO_ROOT_PASSWORD: 'changeme'
+    - MINIO_DEFAULT_BUCKET=image
+    - MINIO_SITE_REGION=ir-tehran
+    - MINIO_ROOT_USER=${MINIO_ROOT_USER:-admin}
+    - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-changeme}
   healthcheck:
     test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
     interval: 30s
@@ -38,15 +41,43 @@ services:
       - ./data/3-1:/data1
       - ./data/3-2:/data2
 
+  # ImgProxy for image processing
+  # source https://imgproxy.net/
+  # -----------------------------
+  imgproxy:
+    image: darthsim/imgproxy:v3.18
+    restart: unless-stopped
+    depends_on:
+      - nginx
+    environment:
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER:-admin}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD:-changeme}
+      - IMGPROXY_KEY=${IMGPROXY_KEY}
+      - IMGPROXY_SALT=${IMGPROXY_SALT}
+      - IMGPROXY_S3_REGION=ir-tehran
+      - IMGPROXY_USE_S3=true
+      - IMGPROXY_ALLOWED_SOURCES=http://nginx:9000/image/*
+      - IMGPROXY_S3_ENDPOINT=http://nginx:9000
+      - IMGPROXY_DEVELOPMENT_ERRORS_MODE=true
+      - IMGPROXY_IGNORE_SSL_VERIFICATION=true
+      - IMGPROXY_ALLOW_LINK_LOCAL_SOURCE_ADDRESSES=true
+      - IMGPROXY_ALLOW_PRIVATE_SOURCE_ADDRESSES=true
+
+
   # edge server touchpoint
   #-----------------------
   nginx:
     build: ./nginx
+    restart: unless-stopped
+    volumes:
+      - ./data/1-1/image:/var/www/image-storage
     depends_on:
       - minio1
       - minio2
       - minio3
     ports:
+      # - 433:433 # enable ssl later
       - 80:80
-      - 9000:9000
+      - 8888:8888 # can removed
+      - 9000:9000 # can removed
       - 9001:9001
