@@ -1,7 +1,7 @@
 # nginx-minio-memcached-imagecaching
 Image Caching and Serving scenario with nginx + minio + memcached
 <br>
-note: replace image_filter woth imgproxy in picture below
+note: replace image_filter with imgproxy in picture below
 
 ![nginx-minio-memcached-imagecaching diagram](https://raw.githubusercontent.com/sadeghmohebbi/nginx-minio-memcached-imagecaching/master/diagram.jpg)
 
