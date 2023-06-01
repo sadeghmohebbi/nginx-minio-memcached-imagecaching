@@ -63,6 +63,19 @@ services:
       - IMGPROXY_ALLOW_LINK_LOCAL_SOURCE_ADDRESSES=true
       - IMGPROXY_ALLOW_PRIVATE_SOURCE_ADDRESSES=true
 
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      - PORT=3000
+      - IMGPROXY_BASE_URL=http://127.0.0.1:8888
+      - IMGPROXY_KEY=${IMGPROXY_KEY}
+      - IMGPROXY_SALT=${IMGPROXY_SALT}
+
+  memcached_server:
+    image: memcached:1.6-alpine
+    restart: unless-stopped
+    command: memcached -m 512
 
   # edge server touchpoint
   #-----------------------
@@ -75,6 +88,8 @@ services:
       - minio1
       - minio2
       - minio3
+      - backend
+      - memcached_server
     ports:
       # - 433:433 # enable ssl later
       - 80:80
