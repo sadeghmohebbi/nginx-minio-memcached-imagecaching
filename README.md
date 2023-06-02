@@ -6,7 +6,14 @@ note: replace image_filter with imgproxy in picture below
 ![nginx-minio-memcached-imagecaching diagram](https://raw.githubusercontent.com/sadeghmohebbi/nginx-minio-memcached-imagecaching/master/assets/diagram.jpg)
 
 ## How it works
-first install docker and compose plugin. then simply run:
+consider providing environment file:
+```
+cp .env.example .env
+# fill .env variables
+vi .env
+```
+<br>
+install docker and compose plugin. then simply run:
 ```
 sudo docker compose up -d --build
 ```
