@@ -7,16 +7,19 @@ note: replace image_filter with imgproxy in picture below
 
 ## How it works
 consider providing environment file:
+
 ```
 cp .env.example .env
 # fill .env variables
 vi .env
 ```
-<br>
+
 install docker and compose plugin. then simply run:
+
 ```
 sudo docker compose up -d --build
 ```
+
 for more detailed description, read this article on virgool (farsi)
 [پیاده سازی کش عکس توزیع شده با nginx و minio و memcached](https://vrgl.ir/sGQrY)
 
